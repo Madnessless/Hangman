@@ -1,0 +1,125 @@
+import java.io.*;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class Game {
+	private static char[] secretWordChar;
+	private static String secretWord;
+	private static char[] currentGuess;
+	private static char[] correctArray;
+	private static char[] incorrectArray;
+	private static int attempt;
+	static char blank;
+	private static int i;
+	
+	public static void Start () {
+		secretWord = determineSecretWord("WordList.txt",100);
+		secretWordChar = toCharArray(secretWord);
+		currentGuess = new char[secretWord.length()];
+		correctArray = new char[26];
+		incorrectArray = new char[26];
+		blank = 95;
+		attempt = 8;
+		Arrays.fill(currentGuess, blank);
+		i = 0;
+	}
+	
+	public static String determineSecretWord (String strFile, int length) {
+		String[] array;
+		array = new String[length];
+		Random rnd = new Random();
+		int randomChoice;
+		File file = new File(strFile);
+		array = loadList(file, length);
+		randomChoice = (int) rnd.nextInt(length);
+		return array[randomChoice];
+	}
+	
+	public static char[] toCharArray (String word) {
+		char[] wordChars;
+		wordChars = word.toCharArray();
+		return wordChars;
+	}
+	
+	public static String[] loadList(File file, int len) {
+		String[] arr = new String[len];
+		Scanner scnr;
+		try {
+			scnr = new Scanner(file);
+			for(int i = 0; scnr.hasNextLine() && i < len; i++){
+				arr[i] = scnr.nextLine().trim();
+			}
+		} catch (FileNotFoundException e) {
+			System.err.println("Couldn't find file");
+		}
+		return arr;
+	}
+	
+	public static String checkGuess (String guess) {
+		char guessChar;
+		CharSequence guessSeq;
+		int j;
+		
+		if (guess == null)
+			return "null";
+		
+		guessChar = guess.charAt(0);
+		guessSeq = guess.subSequence(0, 1);
+		if (secretWord.contains(guessSeq)) {
+			correctArray[i] = guessChar;
+			i++;
+			for (j = 0; j < secretWord.length(); j++) {
+				if (guessChar == secretWordChar[j])
+					currentGuess[j] = guessChar;
+			}
+			return "correct";
+		} else {
+			attempt--;
+			if (attempt <= 0)
+				return "fail";
+			else {		
+				incorrectArray[8 - Game.attempt] = guessChar;
+				return "incorrect";
+			}	
+		}
+	}
+	
+	public static String getCurrentGuess (char[] currentGuess) {
+		String output;
+		output = String.copyValueOf(currentGuess);
+		return output;
+	}
+	
+	public static void printCorrect (char[] correct) {
+		for (char letter : correctArray)
+			if (letter != 0)
+				System.out.print(letter + ", ");
+	}
+	
+	public static void printIncorrect (char[] incorrect) {
+		for (char letter : incorrectArray)
+			if (letter != 0)
+				System.out.print(letter + ", ");
+	}
+	
+	public static String getSecretWord() {
+	    return secretWord;
+	}
+	
+	public static char[] getCurrentGuess() {
+	    return currentGuess;
+	}
+	
+	public static char[] getCorrectArray() {
+	    return correctArray;
+	}
+	
+	public static char[] getIncorrectArray() {
+	    return incorrectArray;
+	}
+	
+	public static int getAttempt() {
+	    return attempt;
+	}
+}	

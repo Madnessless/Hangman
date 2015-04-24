@@ -1,0 +1,41 @@
+import java.util.Scanner;
+public class Hangman {
+	
+	public static void main(String[] args) {
+		Scanner input = new Scanner(System.in);
+		String guess, choice;
+		
+		Game.Start();
+		System.out.println("You have eight tries to guess the word.");
+		System.out.println("The current status of the word is: " + Game.getCurrentGuess(Game.getCurrentGuess()));
+		while (!(Game.getCurrentGuess(Game.getCurrentGuess())).equals(Game.getSecretWord())) {
+			System.out.print("Enter guess: ");
+			guess = input.nextLine();
+			
+			choice = Game.checkGuess(guess);
+			switch (choice) {
+			case "correct":
+				System.out.println("That guess is in the word!");
+				break;
+			case "incorrect":
+				System.out.println("That letter is not in the word.  "
+						+ "You can guess incorrectly " + Game.getAttempt() + " more times.");
+				break;
+			case "failure":
+				System.out.println("\nYou failed!  The word you were trying to guess was \"" + Game.getSecretWord() + "\"");
+				System.exit(0);
+			case "null":
+				System.out.println("You did not enter a guess.  Try again.");
+				break;
+			}
+		
+			System.out.println("The current status of the word is: " + Game.getCurrentGuess(Game.getCurrentGuess()));
+			System.out.print("Correct guesses: ");
+			Game.printCorrect(Game.getCorrectArray());
+			System.out.print("\nIncorrect guesses: ");
+			Game.printIncorrect(Game.getIncorrectArray());
+			System.out.println("\n");
+		}	
+		System.out.println("You win!");
+	}
+}
